@@ -57,7 +57,7 @@ public class EmployeePDFExporter {
         font.setSize(18);
         font.setColor(Color.BLUE);
 
-        Paragraph paragraph = new Paragraph("Employees List", font);
+        Paragraph paragraph = new Paragraph("Employee List", font);
         paragraph.setAlignment(Paragraph.ALIGN_CENTER);
 
         document.add(paragraph);
