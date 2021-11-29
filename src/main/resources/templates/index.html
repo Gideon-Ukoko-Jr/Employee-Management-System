@@ -15,13 +15,17 @@
 <body>
 
 <div class="container my-2">
-    <h1 style="color:red; text-align: center; font-family: 'Arial',sans-serif">Employee Directory</h1>
+    <h1 style="color:blue; text-align: center; font-family: 'Arial',sans-serif"><b>Employee Directory</b></h1>
 
     <br>
 
     <a th:href = "@{/showNewEmployeeForm}" class="btn btn-primary btn-lg"> Add Employee </a>
 
-    <a th:href="@{/employees/export/pdf}" class="btn btn-success btn-lg">Export To PDF</a>
+    <a th:href="@{/employees/export/pdf}" class="btn btn-danger btn-lg float-right">Export To PDF</a>
+
+    <a th:href="@{/employees/export/csv}" class="btn btn-info btn-lg float-right">Export To CSV</a>
+
+    <a th:href="@{/employees/export/excel}" class="btn btn-success btn-lg float-right">Export To Excel</a>
 
     <br>
 

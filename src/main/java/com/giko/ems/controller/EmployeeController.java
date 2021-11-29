@@ -1,5 +1,6 @@
 package com.giko.ems.controller;
 
+import com.giko.ems.exporter.EmployeeExcelExporter;
 import com.giko.ems.exporter.EmployeePDFExporter;
 import com.giko.ems.model.Employee;
 import com.giko.ems.service.EmployeeService;
@@ -9,6 +10,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.supercsv.cellprocessor.ift.CellProcessor;
+import org.supercsv.io.CsvBeanWriter;
+import org.supercsv.io.ICsvBeanWriter;
+import org.supercsv.prefs.CsvPreference;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -95,6 +100,45 @@ public class EmployeeController {
 
         EmployeePDFExporter employeePDFExporter = new EmployeePDFExporter(listEmployees);
         employeePDFExporter.export(response);
+    }
+
+    @GetMapping("/employees/export/csv")
+    public void exportToCSV(HttpServletResponse response) throws IOException {
+        response.setContentType("text/csv");
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss");
+        String currentDateTime = dateFormat.format(new Date());
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=employees_" + currentDateTime + ".csv";
+        response.setHeader(headerKey, headerValue);
+
+        List<Employee> listEmployees = employeeService.getAllEmployees();
+
+        ICsvBeanWriter writer = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
+        String[] csvHeader = {"First Name", "Last Name", "Email", "Department"};
+        String[] nameMapping = {"firstName", "lastName", "email", "department"};
+
+        writer.writeHeader(csvHeader);
+
+        for (Employee employee : listEmployees){
+            writer.write(employee, nameMapping);
+        }
+        writer.close();
+    }
+
+    @GetMapping("/employees/export/excel")
+    public void exportToExcel(HttpServletResponse response) throws IOException {
+        response.setContentType("application/octet-stream");
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss");
+        String currentDateTime = dateFormat.format(new Date());
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=employees_" + currentDateTime + ".xlsx";
+        response.setHeader(headerKey, headerValue);
+
+        List<Employee> listEmployees = employeeService.getAllEmployees();
+        EmployeeExcelExporter excelExporter = new EmployeeExcelExporter(listEmployees);
+        excelExporter.export(response);
     }
 
 }
